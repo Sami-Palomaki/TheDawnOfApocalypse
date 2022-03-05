@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+
 public class Enemy : MonoBehaviour
 {
     public Transform target;
@@ -13,7 +14,7 @@ public class Enemy : MonoBehaviour
     public float attackCD;
     public Transform attackPos;
     private float dist;
-    bool canAttack = false;
+    // bool canAttack = false;
     NavMeshAgent agent;
     Animator anim;
     
@@ -60,15 +61,14 @@ public class Enemy : MonoBehaviour
 
     public void StartAttack()
     {
-
         transform.LookAt(target);       // Vihollinen katsoo sinua päin kun hyökkää
         Collider[] colliders = Physics.OverlapSphere(attackPos.position, radius);
         foreach (var col in colliders)
         {
-            if(col.GetComponent<FirstPersonAIO>())
+            if(col.GetComponent<Player>())
             {
-            DoDamage();
-            break;
+                DoDamage();
+                break;
             }
         }
     }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class Player : MonoBehaviour
 {
@@ -11,6 +12,10 @@ public class Player : MonoBehaviour
     public HealthBar healthBar;
     public GameOverScreen GameOverScreen;
     public AudioClip[] hurtSounds;
+    public RawImage image;
+    public VideoClip videoToPlay;
+    private VideoSource videoSource;
+    private VideoPlayer videoPlayer;
     private AudioSource soundSource;
 
     [Header("Hurt Image Flash")]
@@ -53,7 +58,7 @@ public class Player : MonoBehaviour
         StartCoroutine(HurtFlash());
         currentHealth -= damage;
         HurtSounds();
-
+        StartCoroutine(playVideo());
         healthBar.SetHealth(currentHealth);
 
         if(currentHealth <= 0)              // Jos health laskee alle nollan, peli päättyy
@@ -70,5 +75,20 @@ public class Player : MonoBehaviour
 
         hurtSounds[n] = hurtSounds[0];                 //Tällä varmistetaan, ettei ääntä toisteta kuin kerran
         hurtSounds[0] = soundSource.clip;
+    }
+    IEnumerator playVideo() {
+        videoPlayer = gameObject.AddComponent<VideoPlayer>();
+        videoPlayer.playOnAwake = false;
+        videoPlayer.source = VideoSource.VideoClip;
+        videoPlayer.clip = videoToPlay;
+        videoPlayer.Prepare();
+        WaitForSeconds waitTime = new WaitForSeconds(0.1f);
+        while (!videoPlayer.isPrepared) {
+            yield return waitTime;
+            break;
+        }
+        image.texture = videoPlayer.texture;
+        videoPlayer.Play();
+        Destroy(videoPlayer, 8);
     }
 }
