@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -9,7 +10,21 @@ public class UIManager : MonoBehaviour
     TextMeshProUGUI killCounter_TMP;
     [HideInInspector]
     public int killCount;
+    public GameObject gameOverMenu;
 
+    private void OnEnable()
+    {
+        Player.OnPlayerDeath += EnableGameOverMenu;
+    }
+
+    private void OnDisable()
+    {
+        Player.OnPlayerDeath -= EnableGameOverMenu;
+    }
+    public void EnableGameOverMenu()
+    {
+        gameOverMenu.SetActive(true);
+    }
     void Awake()
     {
         if(instance == null)
@@ -25,5 +40,15 @@ public class UIManager : MonoBehaviour
     public void UpdateKillCounterUI()
     {
         killCounter_TMP.text = killCount.ToString();    // Päivittää tappolaskuria
+    }
+
+    public void RestartButton ()
+    {   
+        SceneManager.LoadScene("FirstLevel");
+    }
+
+    public void QuitButton ()
+    {
+        Application.Quit();
     }
 }

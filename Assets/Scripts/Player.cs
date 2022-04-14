@@ -1,14 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
     public int maxHealth = 100;
     public int currentHealth;
     public bool isGameOver;
+    public static event Action OnPlayerDeath;
     public HealthBar healthBar;
     public GameOverScreen GameOverScreen;
     public AudioClip[] hurtSounds;
@@ -24,7 +27,12 @@ public class Player : MonoBehaviour
 
     public void GameOver() 
     {
-        GameOverScreen.Setup(Target.howManyKills);        
+
+        // GameOverScreen.Setup(Target.howManyKills);     
+        isGameOver = true; 
+        OnPlayerDeath?.Invoke();
+
+    
     }
 
     void Start()
@@ -69,7 +77,7 @@ public class Player : MonoBehaviour
 
     public void HurtSounds()
     {
-        int n = Random.Range(1, hurtSounds.Length);    //Arpoo minkä osuma äänen toistaa
+        int n = UnityEngine.Random.Range(1, hurtSounds.Length);    //Arpoo minkä osuma äänen toistaa
         soundSource.clip = hurtSounds[n];
         soundSource.PlayOneShot(soundSource.clip);      //Toistaa osuma-äänen
 
@@ -82,7 +90,7 @@ public class Player : MonoBehaviour
         videoPlayer.source = VideoSource.VideoClip;
         videoPlayer.clip = videoToPlay;
         videoPlayer.Prepare();
-        WaitForSeconds waitTime = new WaitForSeconds(0.1f);
+        WaitForSeconds waitTime = new WaitForSeconds(0.15f);
         while (!videoPlayer.isPrepared) {
             yield return waitTime;
             break;

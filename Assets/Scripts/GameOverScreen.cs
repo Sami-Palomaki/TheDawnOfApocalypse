@@ -15,7 +15,7 @@ public class GameOverScreen : MonoBehaviour
 
     public void RestartButton()
     {
-        SceneManager.LoadScene("EkaTaso");
+        SceneManager.LoadScene("FirstLevel");
     }
 
     public void MainMenuButton()
